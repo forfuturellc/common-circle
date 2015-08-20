@@ -9,7 +9,7 @@
     "build": "npm run clean ; babel -D src --out-dir .",
     "pretest": "npm run build",
     "test": "grunt test",
-    "test-coverage": "istanbul cover _mocha --report lcovonly -- -R spec ctest/test.*.js"
+    "test-coverage": "istanbul cover _mocha --report lcovonly -- -R spec test/test.*.js"
   },
   "repository": {
     "type": "git",
