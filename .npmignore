@@ -1,0 +1,12 @@
+# ES6 Source
+src/
+
+# Tests
+test/
+
+# Others
+.editorconfig
+.eslintrc
+.gitignore
+.travis.yml
+Gruntfile.js

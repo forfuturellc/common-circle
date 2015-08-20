@@ -1,0 +1,10 @@
+# npm-installed modules
+node_modules/
+
+# babel output
+/lib/
+/test/
+/Gruntfile.js
+
+# temp dir for sails-disk
+.tmp/
