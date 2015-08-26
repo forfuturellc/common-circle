@@ -12,16 +12,12 @@ export default {
 };
 
 
-// npm-installed modules
-import Waterline from "waterline";
-
-
 // own modules
 import orm from "./orm";
 
 
 // groups schema
-const groupSchema = Waterline.Collection.extend({
+const groupSchema = {
   identity: "group",
   connection: "default",
   attributes: {
@@ -41,11 +37,11 @@ const groupSchema = Waterline.Collection.extend({
       dominant: true,
     },
   },
-});
+};
 
 
-// load the group schema
-orm.loadSchema(groupSchema);
+// register the group schema with orm
+orm.registerSchema(groupSchema);
 
 
 /**

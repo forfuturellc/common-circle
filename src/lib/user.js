@@ -21,7 +21,6 @@ export default {
 
 // npm-installed modules
 import _ from "lodash";
-import Waterline from "waterline";
 
 
 // own modules
@@ -31,7 +30,7 @@ import utils from "./utils";
 
 
 // user schema
-const userSchema = Waterline.Collection.extend({
+const userSchema = {
   identity: "user",
   connection: "default",
   attributes: {
@@ -78,11 +77,11 @@ const userSchema = Waterline.Collection.extend({
       return next();
     });
   },
-});
+};
 
 
-// load schema into orm
-orm.loadSchema(userSchema);
+// register user schema with orm
+orm.registerSchema(userSchema);
 
 
 /**

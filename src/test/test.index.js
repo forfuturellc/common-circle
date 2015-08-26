@@ -16,7 +16,18 @@ import user from "../lib/user";
 
 before(function(done) {
   shelljs.rm("-rf", path.resolve(__dirname, "../.tmp/"));
-  circle.init({}, done);
+  circle.init({
+    schemaMods: {
+      user: {
+        attributes: {
+          misc: {
+            type: "string",
+            defaultsTo: "misc",
+          },
+        },
+      },
+    },
+  }, done);
 });
 
 
@@ -48,6 +59,18 @@ describe("circle.init", function() {
       should(foundAdmin).eql(true);
       should(foundPublic).eql(true);
       return done();
+    });
+  });
+
+  it("allows schema modifications", function(done) {
+    const username = "schemaMods";
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
+      should(err).not.be.ok();
+      user.getUser({ username }, function(getErr, u) {
+        should(getErr).not.be.ok();
+        should(u.misc).be.ok();
+        return done();
+      });
     });
   });
 });

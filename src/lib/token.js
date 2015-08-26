@@ -13,7 +13,6 @@ export default {
 // npm-installed modules
 import async from "async";
 import uuid from "node-uuid";
-import Waterline from "waterline";
 
 
 // own modules
@@ -23,7 +22,7 @@ import utils from "./utils";
 
 
 // tokens schema
-const tokenSchema = Waterline.Collection.extend({
+const tokenSchema = {
   identity: "token",
   connection: "default",
   attributes: {
@@ -36,11 +35,11 @@ const tokenSchema = Waterline.Collection.extend({
       model: "user",
     },
   },
-});
+};
 
 
-// load the token schema
-orm.loadSchema(tokenSchema);
+// register the token schema with orm
+orm.registerSchema(tokenSchema);
 
 
 /**

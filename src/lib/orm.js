@@ -6,7 +6,7 @@
 export default {
   getModels,
   init,
-  loadSchema,
+  registerSchema,
 };
 
 
@@ -17,17 +17,9 @@ import Waterline from "waterline";
 
 // module variables
 let models;
+let schemas = { };
+let schemaMods = { };
 const orm = new Waterline();
-
-
-/**
- * Load schema into the ORM
- *
- * @param {Object} schema
- */
-function loadSchema(schema) {
-  return orm.loadCollection(schema);
-}
 
 
 /**
@@ -35,6 +27,41 @@ function loadSchema(schema) {
  */
 function getModels() {
   return models;
+}
+
+
+/**
+ * Return schema modifications
+ *
+ * @param {String} key - schema name/key e.g. user
+ */
+function getSchemaMods(key) {
+  return schemaMods[key] || { };
+}
+
+
+/**
+ * Register base schemas
+ *
+ * @param {Object} schema
+ */
+function registerSchema(schema) {
+  schemas[schema.identity] = schema;
+}
+
+
+/**
+ * Load schema into the ORM
+ *
+ * @param {Object} schema
+ */
+function loadSchemas() {
+  for (let key in schemas) {
+    let schema = schemas[key];
+    schema = _.merge(schema, getSchemaMods(schema.identity));
+    const s = Waterline.Collection.extend(schema);
+    orm.loadCollection(s);
+  }
 }
 
 
@@ -48,6 +75,7 @@ function getModels() {
  */
 function init(config, done) {
   let adapter;
+  schemaMods = config.schemaMods || { }; // store globally
 
   const c = _.merge({}, {
     adapter: {
@@ -63,6 +91,9 @@ function init(config, done) {
     console.error(`adapter '${c.adapter.name}' is missing. Ensure you do 'npm install ${c.adapter.name}'!`);
     return done(err);
   }
+
+  // load the schemas
+  loadSchemas();
 
   // orm configurations
   const ormConfig = {
