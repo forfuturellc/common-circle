@@ -12,7 +12,6 @@ export default {
 
 // npm-installed modules
 import async from "async";
-import bcrypt from "bcrypt";
 import uuid from "node-uuid";
 import Waterline from "waterline";
 
@@ -20,6 +19,7 @@ import Waterline from "waterline";
 // own modules
 import orm from "./orm";
 import usr from "./user";
+import utils from "./utils";
 
 
 // tokens schema
@@ -44,24 +44,6 @@ orm.loadSchema(tokenSchema);
 
 
 /**
- * Hash a token. We shall not store the token in plain text for security
- * purposes.
- *
- * @param {String} token
- * @param {Function} done - done(err, hash)
- */
-function hashToken(token, done) {
-  return bcrypt.genSalt(10, function(genSaltErr, salt) {
-    if (genSaltErr) {
-      return done(genSaltErr);
-    }
-
-    return bcrypt.hash(token, salt, done);
-  });
-}
-
-
-/**
  * Create a token for a user. A token is simply a v4 uuid.
  *
  * @param {Object} query
@@ -79,9 +61,9 @@ function createToken(query, done) {
 
     const token = uuid.v4();
 
-    return hashToken(token, function(cryptErr, hash) {
-      if (cryptErr) {
-        return done(cryptErr);
+    return utils.hash(token, function(hashErr, hash) {
+      if (hashErr) {
+        return done(hashErr);
       }
 
       return orm.getModels().collections.token
@@ -141,7 +123,7 @@ function tokenExists(query, token, done) {
     let found = false;
 
     async.until(() => found || (index >= hashes.length), function(next) {
-      bcrypt.compare(token, hashes[index++].uuid, function(err, match) {
+      utils.hashCompare(token, hashes[index++].uuid, function(err, match) {
         found = match;
         return next(err);
       });
