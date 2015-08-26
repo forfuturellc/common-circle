@@ -11,7 +11,7 @@ describe("token.createToken", function() {
   const username = "createToken";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       return done();
     });
@@ -40,7 +40,7 @@ describe("token.tokenExists", function() {
   let testToken;
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       token.createToken({ username }, function(err2, t) {
         should(err2).not.be.ok();
@@ -80,7 +80,7 @@ describe("token.deleteToken", function() {
   let testToken;
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       token.createToken({ username }, function(err2, t) {
         should(err2).not.be.ok();

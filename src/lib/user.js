@@ -8,6 +8,7 @@ export default {
   deleteUser,
   getUser,
   getUsers,
+  updateUser,
   addLeaderToGroup: composeAddRemoveGroupMember({ roles: "leaders" }),
   addMemberToGroup: composeAddRemoveGroupMember({ roles: "members" }),
   isAdmin: composeIsInGroup({ groupname: "admin" }),
@@ -19,6 +20,7 @@ export default {
 
 
 // npm-installed modules
+import _ from "lodash";
 import Waterline from "waterline";
 
 
@@ -36,6 +38,10 @@ const userSchema = Waterline.Collection.extend({
       type: "string",
       required: true,
       unique: true,
+    },
+    password: {
+      type: "string",
+      required: true,
     },
     tokens: {
       collection: "token",
@@ -87,6 +93,24 @@ function createUser({ user, group={name: "public"} }, done) {
 
 
 /**
+ * Update user information
+ *
+ * @param {Object} user - user information
+ * @param {Function} done - done(err, user)
+ */
+function updateUser(user, done) {
+  return getUser(_.pick(user, "id", "username"), function(getUserErr, u) {
+    if (getUserErr) {
+      return done(getUserErr);
+    }
+
+    _.assign(u, user);
+    return u.save(done);
+  });
+}
+
+
+/**
  * Return function for removing or adding user to group
  *
  * @param {String} [action="add"]
@@ -131,7 +155,7 @@ function composeAddRemoveGroupMember({ action="add", roles="members" }) {
 /**
  * Get a single user. Automatically loads the tokens.
  *
- * @param {String} username
+ * @param {Object} query
  * @param {Function} done - done(err, user)
  */
 function getUser(query, done) {

@@ -9,7 +9,7 @@ import user from "../lib/user";
 describe("user.createUser", function() {
   it("creates user", function(done) {
     const username = "sheldon";
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       user.getUser({ username }, function(err2, u) {
         should(err2).not.be.ok();
@@ -21,7 +21,7 @@ describe("user.createUser", function() {
 
   it("errors if user already exists", function(done) {
     const username = "exists";
-    user.createUser({ user: {username} }, function(err1) {
+    user.createUser({ user: {username, password: "pass"} }, function(err1) {
       should(err1).not.be.ok();
       user.createUser({ user: {username} }, function(err2) {
         should(err2).be.ok();
@@ -32,7 +32,7 @@ describe("user.createUser", function() {
 
   it("allows a custom group", function(done) {
     const username = "in-group";
-    user.createUser({ user: {username}, group: {name: "admin"}}, function(err) {
+    user.createUser({ user: {username, password: "pass"}, group: {name: "admin"}}, function(err) {
       should(err).not.be.ok();
       user.isAdmin({ user: {username} }, function(err2, bool) {
         should(err2).not.be.ok();
@@ -43,9 +43,29 @@ describe("user.createUser", function() {
   });
 
   it("errors if group does not exist", function(done) {
-    user.createUser({ user: {username: "does-not-exist"}, group: { name: "does-not-exist" } }, function(err) {
+    user.createUser({ user: {username: "does-not-exist", password: "pass"}, group: { name: "does-not-exist" } }, function(err) {
       should(err).be.ok();
       return done();
+    });
+  });
+});
+
+
+describe("user.updateUser", function() {
+  const username = "updateUser";
+
+  before(function(done) {
+    user.createUser({ user: {username, password: "pass"}}, done);
+  });
+
+  it("updates user information", function(done) {
+    user.updateUser({ username, password: "new"}, function(updateErr) {
+      should(updateErr).not.be.ok();
+      user.getUser({ username }, function(getErr, u) {
+        should(getErr).not.be.ok();
+        should(u.password).eql("new");
+        return done();
+      });
     });
   });
 });
@@ -55,7 +75,7 @@ describe("user.getUser", function() {
   const username = "getUser";
 
   before(function(done) {
-    user.createUser({ user: {username} }, done);
+    user.createUser({ user: {username, password: "pass"} }, done);
   });
 
   it("returns the user", function(done) {
@@ -91,7 +111,7 @@ describe("user.addMemberToGroup", function() {
   const username = "addMemberToGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, done);
+    user.createUser({ user: {username, password: "pass"} }, done);
   });
 
   it("adds user to group", function(done) {
@@ -142,7 +162,7 @@ describe("user.addLeaderToGroup", function() {
   const username = "addLeaderToGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, done);
+    user.createUser({ user: {username, password: "pass"} }, done);
   });
 
   it("adds leader to group", function(done) {
@@ -196,7 +216,7 @@ describe("user.isMemberInGroup", function() {
   const username = "isMemberInGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       return done();
     });
@@ -240,7 +260,7 @@ describe("user.isLeaderInGroup", function() {
   const username = "isLeaderInGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       user.addLeaderToGroup({
         user: { username },
@@ -287,7 +307,7 @@ describe("user.removeMemberFromGroup", function() {
   const username = "removeMemberFromGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       user.addMemberToGroup({
         user: { username },
@@ -339,7 +359,7 @@ describe("user.removeLeaderFromGroup", function() {
   const username = "removeLeaderFromGroup";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       user.addLeaderToGroup({
         user: { username },
@@ -391,7 +411,7 @@ describe("user.deleteUser", function() {
   const username = "deleteUser";
 
   before(function(done) {
-    user.createUser({ user: {username} }, function(err) {
+    user.createUser({ user: {username, password: "pass"} }, function(err) {
       should(err).not.be.ok();
       return done();
     });

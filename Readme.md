@@ -3,6 +3,8 @@
 
 > A General Implementation of User and Group Management
 
+> :construction: Highly **Work In Progress** :construction:
+
 [![node](https://img.shields.io/node/v/common-circle.svg?style=flat-square)](https://www.npmjs.com/package/common-circle) [![npm](https://img.shields.io/npm/v/common-circle.svg?style=flat-square)](https://www.npmjs.com/package/common-circle) [![Travis](https://img.shields.io/travis/forfutureLLC/common-circle.svg?style=flat-square)](https://travis-ci.org/forfutureLLC/common-circle) [![Gemnasium](https://img.shields.io/gemnasium/forfutureLLC/common-circle.svg?style=flat-square)](https://gemnasium.com/forfutureLLC/common-circle) [![Coveralls](https://img.shields.io/coveralls/forfutureLLC/common-circle.svg?style=flat-square)](https://coveralls.io/github/forfutureLLC/common-circle?branch=master)
 
 
@@ -160,6 +162,15 @@ Create a single user.
 Errors may occur if:
   * user already exists
   * group does **not** exist
+
+
+#### user.updateUser(query, done)
+
+Update user information.
+
+* `query` (Object): ([identifier](#user-id)) + properties to update
+* `done(err)` (Function)
+  * `err` (Error)
 
 
 #### user.deleteUser(query, done)
