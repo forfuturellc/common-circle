@@ -4,6 +4,7 @@ import should from "should";
 
 // own modules
 import user from "../lib/user";
+import utils from "../lib/utils";
 
 
 describe("user.createUser", function() {
@@ -48,6 +49,23 @@ describe("user.createUser", function() {
       return done();
     });
   });
+
+  it("hashes the user's password", function(done) {
+    const username = "hashPasswordAutomatically";
+    const password = "password";
+    user.createUser({ user: {username, password}}, function(err) {
+      should(err).not.be.ok();
+      user.getUser({ username }, function(getErr, u) {
+        should(getErr).not.be.ok();
+        should(u.password).not.eql(password);
+        utils.hashCompare(password, u.password, function(compareErr, match) {
+          should(compareErr).not.be.ok();
+          should(match).eql(true);
+          return done();
+        });
+      });
+    });
+  });
 });
 
 
@@ -58,13 +76,17 @@ describe("user.updateUser", function() {
     user.createUser({ user: {username, password: "pass"}}, done);
   });
 
-  it("updates user information", function(done) {
-    user.updateUser({ username, password: "new"}, function(updateErr) {
+  it("updates user information + hashes password", function(done) {
+    const password = "new-password";
+    user.updateUser({ username, password}, function(updateErr) {
       should(updateErr).not.be.ok();
       user.getUser({ username }, function(getErr, u) {
         should(getErr).not.be.ok();
-        should(u.password).eql("new");
-        return done();
+        utils.hashCompare(password, u.password, function(compareErr, match) {
+          should(compareErr).not.be.ok();
+          should(match).eql(true);
+          return done();
+        });
       });
     });
   });

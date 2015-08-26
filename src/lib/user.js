@@ -27,6 +27,7 @@ import Waterline from "waterline";
 // own modules
 import grp from "./group";
 import orm from "./orm";
+import utils from "./utils";
 
 
 // user schema
@@ -55,6 +56,27 @@ const userSchema = Waterline.Collection.extend({
       collection: "group",
       via: "leaders",
     },
+  },
+  beforeCreate(values, next) {
+    return utils.hash(values.password, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      values.password = hash;
+      return next();
+    });
+  },
+  beforeUpdate(values, next) {
+    if (!values.password) {
+      return next();
+    }
+    return utils.hash(values.password, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      values.password = hash;
+      return next();
+    });
   },
 });
 
