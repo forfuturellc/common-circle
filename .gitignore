@@ -8,3 +8,6 @@ node_modules/
 
 # temp dir for sails-disk
 .tmp/
+
+# error logs
+*.log
