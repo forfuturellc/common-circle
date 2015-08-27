@@ -55,6 +55,9 @@ const userSchema = {
       collection: "group",
       via: "leaders",
     },
+    matchPassword(password, done) {
+      return utils.hashCompare(password, this.password, done);
+    },
   },
   beforeCreate(values, next) {
     return utils.hash(values.password, function(err, hash) {

@@ -457,3 +457,37 @@ describe("user.deleteUser", function() {
     });
   });
 });
+
+
+describe("<user>.matchPassword", function() {
+  const username = "matchPassword";
+  const password = "my-secret-password";
+  let myUser;
+
+  before(function(done) {
+    user.createUser({ user: {username, password}}, function(err) {
+      should(err).not.be.ok();
+      user.getUser({ username }, function(getErr, u) {
+        should(getErr).not.be.ok();
+        myUser = u;
+        return done();
+      });
+    });
+  });
+
+  it("returns true if passwords match", function(done) {
+    myUser.matchPassword(password, function(err, match) {
+      should(err).not.be.ok();
+      should(match).eql(true);
+      return done();
+    });
+  });
+
+  it("returns false if passwords do not match", function(done) {
+    myUser.matchPassword("wrong-password", function(err, match) {
+      should(err).not.be.ok();
+      should(match).eql(false);
+      return done();
+    });
+  });
+});
