@@ -68,10 +68,14 @@ const userSchema = {
       return next();
     });
   },
+  // this is purposefully placed here to ensure the password is ALWAYS hashed
   beforeUpdate(values, next) {
-    if (!values.password) {
+    // a hash is always of length 60
+    // see https://github.com/ncb000gt/node.bcrypt.js#hash-info for more info
+    if (values.password.length === 60) {
       return next();
     }
+
     return utils.hash(values.password, function(err, hash) {
       if (err) {
         return next(err);
@@ -106,11 +110,14 @@ function createUser({ user, group={name: "public"} }, done) {
     }
 
     theGroup.members.add(user);
-    return theGroup.save(function(saveErr) {
+    return theGroup.save(function(saveErr, g) {
       if (saveErr) {
         return done(saveErr);
       }
-      return done(null);
+      let u = _.find(g.members, function(member) {
+        return member.username === member.username;
+      });
+      return done(null, u);
     });
   });
 }
@@ -183,12 +190,21 @@ function composeAddRemoveGroupMember({ action="add", roles="members" }) {
  * @param {Function} done - done(err, user)
  */
 function getUser(query, done) {
-  return orm.getModels().collections.user
+  const populate = query.populate;
+  delete query.populate;
+  const user = orm.getModels().collections.user
     .findOne(query)
     .populate("tokens")
     .populate("groups")
-    .populate("leading")
-    .exec(done);
+    .populate("leading");
+
+  if (populate) {
+    populate.forEach(function(p) {
+      user.populate(p);
+    });
+  }
+
+  return user.exec(done);
 }
 
 

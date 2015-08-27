@@ -71,14 +71,33 @@ describe("user.createUser", function() {
 
 describe("user.updateUser", function() {
   const username = "updateUser";
+  const password = "pass";
 
   before(function(done) {
-    user.createUser({ user: {username, password: "pass"}}, done);
+    user.createUser({ user: {username, password}}, done);
+  });
+
+  afterEach(function(done) {
+    user.updateUser({ username, password }, done);
   });
 
   it("updates user information + hashes password", function(done) {
-    const password = "new-password";
-    user.updateUser({ username, password}, function(updateErr) {
+    const pass = "new-password";
+    user.updateUser({ username, password: pass }, function(updateErr) {
+      should(updateErr).not.be.ok();
+      user.getUser({ username }, function(getErr, u) {
+        should(getErr).not.be.ok();
+        utils.hashCompare(pass, u.password, function(compareErr, match) {
+          should(compareErr).not.be.ok();
+          should(match).eql(true);
+          return done();
+        });
+      });
+    });
+  });
+
+  it("leaves password untouched if not being updated", function(done) {
+    user.updateUser({ username }, function(updateErr) {
       should(updateErr).not.be.ok();
       user.getUser({ username }, function(getErr, u) {
         should(getErr).not.be.ok();
