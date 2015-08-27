@@ -18,7 +18,7 @@ import Waterline from "waterline";
 // module variables
 let models;
 let schemas = { };
-let schemaMods = { };
+let userSchemas = { };
 const orm = new Waterline();
 
 
@@ -27,16 +27,6 @@ const orm = new Waterline();
  */
 function getModels() {
   return models;
-}
-
-
-/**
- * Return schema modifications
- *
- * @param {String} key - schema name/key e.g. user
- */
-function getSchemaMods(key) {
-  return schemaMods[key] || { };
 }
 
 
@@ -56,9 +46,12 @@ function registerSchema(schema) {
  * @param {Object} schema
  */
 function loadSchemas() {
-  for (let key in schemas) {
-    let schema = schemas[key];
-    schema = _.merge(schema, getSchemaMods(schema.identity));
+  let all = {};
+  _.merge(all, schemas, userSchemas);
+  for (let key in all) {
+    let schema = all[key];
+    schema.identity = schema.identity || key;
+    schema.connection = schema.connection || "default";
     const s = Waterline.Collection.extend(schema);
     orm.loadCollection(s);
   }
@@ -75,7 +68,7 @@ function loadSchemas() {
  */
 function init(config, done) {
   let adapter;
-  schemaMods = config.schemaMods || { }; // store globally
+  userSchemas = config.schemas || { }; // store globally
 
   const c = _.merge({}, {
     adapter: {

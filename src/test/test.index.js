@@ -10,6 +10,7 @@ import should from "should";
 // own modules
 import circle from "../lib/index";
 import group from "../lib/group";
+import orm from "../lib/orm";
 import token from "../lib/token";
 import user from "../lib/user";
 
@@ -17,13 +18,18 @@ import user from "../lib/user";
 before(function(done) {
   shelljs.rm("-rf", path.resolve(__dirname, "../.tmp/"));
   circle.init({
-    schemaMods: {
+    schemas: {
       user: {
         attributes: {
           misc: {
             type: "string",
             defaultsTo: "misc",
           },
+        },
+      },
+      custom: {
+        attributes: {
+          name: { type: "string" },
         },
       },
     },
@@ -72,5 +78,9 @@ describe("circle.init", function() {
         return done();
       });
     });
+  });
+
+  it("allow new schemas", function() {
+    should(orm.getModels().collections.custom).be.ok();
   });
 });
