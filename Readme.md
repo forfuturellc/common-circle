@@ -36,7 +36,11 @@ Using a single module for user and group management would ensure less work. Let'
 
 > Does it **work** for my application?
 
-If your application requires simple user and group management, this module **might** work. This module might **not** satisfy all your application needs. It is up to you to see if the module suits your application.
+If your application requires simple user and group management, this module **might** work.
+
+This module implements common database models and methods such as *user tokens, matching user's password, etc*. It aims at reducing the work of re-implementing such common stuff while **not** enforcing a way of doing things in your application.
+
+This module might **not** satisfy all your application needs. It is up to you to see if the module suits your application. You can always build around it to meet your needs. This way you just focus on the needs the module does **not** satisfy.
 
 
 <a name="api"></a>
@@ -57,7 +61,7 @@ The API is centered around three entities:
 
 Also, the following inner modules are exported off `circle`:
 
-* `errors`: for handling errors
+* `errors`: for handling errors *(currently, almost useless)*
 
 
 <a name="init"></a>
@@ -68,11 +72,53 @@ Initializes the circle.
 * `config` (Object)
   * `config.adapter` (Object): configurations for your adapter
   * `config.adapter.name` (String): name of adapter e.g. `"sails-disk"`. See [adapters](#adapters).
+  * `config.schemas` (Object): mapping of schemas
 * `done(err)` (Function): called once the circle is done initialized
 
 By default, circle uses [sails-disk](https://github.com/balderdashy/sails-disk). If you are testing out things, you need **not** configure aything at all. Just pass an empty object, `{}`.
 
 The groups, **admin** and **public**, are created automatically for you.
+
+Since you might want to modify the built-in schemas or even add new ones, `config.schemas` can be used. It is an object of schemas. For example,
+
+```js
+{
+  dog: {
+    attributes: {
+      name: { type: "string" },
+    },
+  },
+  cat: {
+    attributes: {
+      name: { type: "string" },
+      meow() {
+        console.log("meow");
+      },
+    },
+  },
+}
+```
+
+The built-in schemas and user schemas (the ones you pass here) are **merged** together. This means that you can simply modify a built-in schema by defining the modified properties in `config.schemas.<identity>`.
+
+For example, modifying user schema,
+
+```js
+{
+  user: {
+    attributes: {
+      hometown: {
+        type: "string",
+      },
+    },
+  },
+}
+```
+
+See [how to define schemas](https://github.com/balderdashy/waterline-docs/blob/master/models/models.md). **Note** that the properties `identity` and `connection` can be omitted, in which case, they will default to key of the schema (e.g. `"dog"` or `"cat"`) and `"default"` respectively.
+
+If you wish to modify the built-in schemas, inspect them in the relevant files in `src/`.
+
 
 Errors may occur if:
   * adapter is **not** installed
@@ -149,12 +195,24 @@ Get all groups.
 `query.username` and `query.id` are mutually exclusive.
 
 
+<a name="user-model"></a>
+#### user model:
+
+* `username` (String)
+* `password` (String)
+* `tokens` (String[])
+* `matchPassword(password, done)`
+  * `password` (String)
+  * `done(err, isCorrect)`
+
+
 #### user.createUser(query, done)
 
 Create a single user.
 
 * `query` (Object):
   * `query.user.username` (String): username of user
+  * `query.user.password` (String): password of user
   * `query.group`: [identifier](#user-id). If not specified, user is created in the **public** group.
 * `done(err)` (Function)
   * `err` (Error)
@@ -192,7 +250,7 @@ Get a single user. The user, if found, is populated with tokens, groups they are
 * `query` (Object): [identifier](#user-id)
 * `done(err, user)` (Function)
   * `err` (Error)
-  * `user` (Object|null)
+  * `user` (Object|null): [user model](#user-model)
 
 
 #### user.getUsers(done)
