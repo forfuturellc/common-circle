@@ -62,6 +62,7 @@ The API is centered around three entities:
 Also, the following inner modules are exported off `circle`:
 
 * `errors`: for handling errors *(currently, almost useless)*
+* `orm`: for handling custom schema/models. See [orm](#orm).
 
 
 <a name="init"></a>
@@ -412,6 +413,17 @@ Errors may occur if:
 
 Errors may occur if:
   * user does **not** exist
+
+
+
+<a name="orm"></a>
+## orm:
+
+The sub-module, `orm`, is used to handle custom models you might have defined.
+
+### orm.getModels():
+
+Returns the models from the underlying orm. See [getting started with models/Waterline](https://github.com/balderdashy/waterline-docs/blob/master/introduction/getting-started.md).
 
 
 

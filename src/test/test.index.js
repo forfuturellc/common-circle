@@ -9,6 +9,7 @@ import should from "should";
 
 // own modules
 import circle from "../lib/index";
+import errors from "../lib/errors";
 import group from "../lib/group";
 import orm from "../lib/orm";
 import token from "../lib/token";
@@ -42,6 +43,13 @@ describe("circle module", function() {
     should.strictEqual(circle.group, group);
     should.strictEqual(circle.token, token);
     should.strictEqual(circle.user, user);
+    should.strictEqual(circle.errors, errors);
+  });
+
+  it("exports subset of functions of orm", function() {
+    ["getModels"].forEach(function(k) {
+      should(circle.orm[k]).be.ok();
+    });
   });
 });
 

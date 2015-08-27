@@ -4,6 +4,7 @@
 
 
 // own modules
+import errors from "./errors";
 import group from "./group";
 import orm from "./orm";
 import user from "./user";
@@ -33,8 +34,12 @@ function init(config, done) {
 
 
 export default {
-  init,
+  errors,
   group,
+  init,
   token,
   user,
+  orm: {
+    getModels: orm.getModels,
+  },
 };
