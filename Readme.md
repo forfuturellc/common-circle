@@ -2,7 +2,9 @@
 # common-circle
 
 > A General Implementation of User and Group Management
-
+>
+> Using [Waterline](https://github.com/balderdashy/waterline) under the covers.
+>
 > :construction: Highly **Work In Progress** :construction:
 
 [![node](https://img.shields.io/node/v/common-circle.svg?style=flat-square)](https://www.npmjs.com/package/common-circle) [![npm](https://img.shields.io/npm/v/common-circle.svg?style=flat-square)](https://www.npmjs.com/package/common-circle) [![Travis](https://img.shields.io/travis/forfutureLLC/common-circle.svg?style=flat-square)](https://travis-ci.org/forfutureLLC/common-circle) [![Gemnasium](https://img.shields.io/gemnasium/forfutureLLC/common-circle.svg?style=flat-square)](https://gemnasium.com/forfutureLLC/common-circle) [![Coveralls](https://img.shields.io/coveralls/forfutureLLC/common-circle.svg?style=flat-square)](https://coveralls.io/github/forfutureLLC/common-circle?branch=master)
@@ -47,7 +49,7 @@ This module might **not** satisfy all your application needs. It is up to you to
 ## API:
 
 ```js
-const circle = require("common-circle");
+import circle from "common-circle";
 ```
 
 Before starting to handling entities, you'll need to [initialize the circle](#init).
@@ -101,6 +103,8 @@ Since you might want to modify the built-in schemas or even add new ones, `confi
 ```
 
 The built-in schemas and user schemas (the ones you pass here) are **merged** together. This means that you can simply modify a built-in schema by defining the modified properties in `config.schemas.<identity>`.
+
+Modifying built-in schemas may be necessary for [validations](https://github.com/balderdashy/waterline-docs/blob/master/models/validations.md). This module does **not** wish to enforce any constraints on you. Choose what fits for you.
 
 For example, modifying user schema,
 
