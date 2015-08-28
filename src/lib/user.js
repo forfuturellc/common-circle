@@ -115,7 +115,7 @@ function createUser({ user, group={name: "public"} }, done) {
         return done(saveErr);
       }
       let u = _.find(g.members, function(member) {
-        return member.username === member.username;
+        return member.username === user.username;
       });
       return done(null, u);
     });

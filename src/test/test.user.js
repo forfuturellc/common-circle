@@ -66,6 +66,15 @@ describe("user.createUser", function() {
       });
     });
   });
+
+  it("returns the correct user", function(done) {
+    const username = "returnCorrectUser";
+    user.createUser({ user: { username, password: "pass" }}, function(err, u) {
+      should(err).not.be.ok();
+      should(u.username).eql(username);
+      return done();
+    });
+  });
 });
 
 
