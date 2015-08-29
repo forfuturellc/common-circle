@@ -143,6 +143,16 @@ describe("user.getUser", function() {
       return done();
     });
   });
+
+  it("user.toJSON hides tokens and password", function(done) {
+    user.getUser({ username }, function(err, u) {
+      should(err).not.be.ok();
+      const json = u.toJSON();
+      should(json.password).be.Undefined();
+      should(json.tokens).be.Undefined();
+      return done();
+    });
+  });
 });
 
 

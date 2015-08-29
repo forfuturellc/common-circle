@@ -58,6 +58,12 @@ const userSchema = {
     matchPassword(password, done) {
       return utils.hashCompare(password, this.password, done);
     },
+    toJSON() {
+      let obj = this.toObject();
+      delete obj.password;
+      delete obj.tokens;
+      return obj;
+    },
   },
   beforeCreate(values, next) {
     return utils.hash(values.password, function(err, hash) {
