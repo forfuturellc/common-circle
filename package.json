@@ -1,6 +1,6 @@
 {
   "name": "common-circle",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A General Implementation of User and Group Management",
   "main": "lib/index.js",
   "scripts": {
