@@ -132,16 +132,17 @@ function createUser({ user, group={name: "public"} }, done) {
 /**
  * Update user information
  *
- * @param {Object} user - user information
+ * @param {Object} query - used to find user
+ * @param {Object} updates - information to update
  * @param {Function} done - done(err, user)
  */
-function updateUser(user, done) {
-  return getUser(_.pick(user, "id", "username"), function(getUserErr, u) {
+function updateUser(query, updates, done) {
+  return getUser(query, function(getUserErr, u) {
     if (getUserErr) {
       return done(getUserErr);
     }
 
-    _.assign(u, user);
+    _.assign(u, updates);
     return u.save(done);
   });
 }

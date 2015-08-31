@@ -227,11 +227,12 @@ Errors may occur if:
   * group does **not** exist
 
 
-#### user.updateUser(query, done)
+#### user.updateUser(query, updates, done)
 
 Update user information.
 
-* `query` (Object): ([identifier](#user-id)) + properties to update
+* `query` (Object): ([identifier](#user-id))
+* `updates` (Object): properties to update
 * `done(err)` (Function)
   * `err` (Error)
 

@@ -87,12 +87,12 @@ describe("user.updateUser", function() {
   });
 
   afterEach(function(done) {
-    user.updateUser({ username, password }, done);
+    user.updateUser({ username}, { password }, done);
   });
 
   it("updates user information + hashes password", function(done) {
     const pass = "new-password";
-    user.updateUser({ username, password: pass }, function(updateErr) {
+    user.updateUser({ username }, { password: pass }, function(updateErr) {
       should(updateErr).not.be.ok();
       user.getUser({ username }, function(getErr, u) {
         should(getErr).not.be.ok();
@@ -106,7 +106,7 @@ describe("user.updateUser", function() {
   });
 
   it("leaves password untouched if not being updated", function(done) {
-    user.updateUser({ username }, function(updateErr) {
+    user.updateUser({ username }, {}, function(updateErr) {
       should(updateErr).not.be.ok();
       user.getUser({ username }, function(getErr, u) {
         should(getErr).not.be.ok();
