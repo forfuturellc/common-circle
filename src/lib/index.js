@@ -4,6 +4,7 @@
 
 
 // own modules
+import async from "async";
 import errors from "./errors";
 import group from "./group";
 import orm from "./orm";
@@ -18,17 +19,24 @@ function init(config, done) {
     }
 
     // ignore error if groups already created
-    function catcher(createErr) {
-      if (createErr && createErr.code !== "E_VALIDATION") {
-        return done(createErr);
-      }
+    function catcher(next) {
+      return function(createErr) {
+        if (createErr && createErr.code !== "E_VALIDATION") {
+          return next(createErr);
+        }
+        return next();
+      };
     }
 
     // create the administrators & public group
-    group.createGroup({ name: "admin" }, catcher);
-    group.createGroup({ name: "public" }, catcher);
-
-    return process.nextTick(done);
+    return async.series([
+      function(next) {
+        group.createGroup({ name: "admin" }, catcher(next));
+      },
+      function(next) {
+        group.createGroup({ name: "public" }, catcher(next));
+      },
+    ], done);
   });
 }
 

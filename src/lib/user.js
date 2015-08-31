@@ -112,7 +112,7 @@ function createUser({ user, group={name: "public"} }, done) {
     }
 
     if (!theGroup) {
-      return done(new Error(`group '${group}' not found`));
+      return done(new Error(`group '${group.name}' not found`));
     }
 
     theGroup.members.add(user);
