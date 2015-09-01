@@ -25,6 +25,7 @@ import utils from "./utils";
 const tokenSchema = {
   identity: "token",
   connection: "default",
+  migrate: "safe",
   attributes: {
     uuid: {
       type: "string",

@@ -33,6 +33,7 @@ import utils from "./utils";
 const userSchema = {
   identity: "user",
   connection: "default",
+  migrate: "safe",
   attributes: {
     username: {
       type: "string",
