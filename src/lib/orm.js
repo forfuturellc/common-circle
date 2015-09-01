@@ -75,6 +75,9 @@ function init(config, done) {
       adapter: "default",
       name: "sails-disk",
     },
+    defaults: {
+      migrate: "create",
+    },
   }, config);
 
   // try load the adapter
@@ -96,6 +99,7 @@ function init(config, done) {
     connections: {
       default: c.adapter,
     },
+    defaults: c.defaults,
   };
 
   return orm.initialize(ormConfig, function(err, m) {

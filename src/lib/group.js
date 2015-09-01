@@ -20,7 +20,6 @@ import orm from "./orm";
 const groupSchema = {
   identity: "group",
   connection: "default",
-  migrate: "safe",
   attributes: {
     name: {
       type: "string",
